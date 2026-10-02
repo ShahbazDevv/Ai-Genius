@@ -1,0 +1,31 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Keys & Certificates
+*.key
+*.pem
+
+# Flutter / Dart
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+
+# Large ML model files
+*.h5
+*.pkl
+*.joblib
+*.onnx
+
+# OS generated files
+.DS_Store
+Thumbs.db
