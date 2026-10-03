@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
+import 'modules/saved/controllers/saved_controller.dart';
 import 'routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Get.put(ThemeController(), permanent: true);
+  Get.put(SavedController(), permanent: true);
   runApp(const AiGeniusApp());
 }
 

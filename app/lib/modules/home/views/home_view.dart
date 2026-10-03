@@ -7,6 +7,7 @@ import '../../../core/theme/theme_controller.dart';
 import '../../../core/utils/app_utils.dart';
 import '../../../core/widgets/widgets.dart';
 import '../controllers/home_controller.dart';
+import '../../saved/views/saved_view.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -498,22 +499,9 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  // --- TAB 1: SAVED GIFTS PLACEHOLDER ---
+  // --- TAB 1: SAVED GIFTS SCREEN ---
   Widget _buildSavedTab(BuildContext context) {
-    return Column(
-      children: [
-        _buildTopBar(context),
-        Expanded(
-          child: EmptyState(
-            title: 'No Saved Gifts Yet',
-            description: 'Saved products and categories will appear here and are available offline.',
-            icon: const Icon(Icons.favorite_border_rounded, size: 40, color: AppColors.yellowAccent),
-            buttonText: 'Find Gifts',
-            onButtonPressed: () => controller.changeTab(0),
-          ),
-        ),
-      ],
-    );
+    return const SavedView(isEmbedded: true);
   }
 
   // --- TAB 2: HISTORY PLACEHOLDER ---
