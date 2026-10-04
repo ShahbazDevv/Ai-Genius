@@ -11,8 +11,12 @@ import '../modules/results/bindings/results_binding.dart';
 import '../modules/results/views/results_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/history/bindings/history_binding.dart';
+import '../modules/history/views/history_view.dart';
 import '../modules/saved/bindings/saved_binding.dart';
 import '../modules/saved/views/saved_view.dart';
+import '../modules/settings/bindings/settings_binding.dart';
+import '../modules/settings/views/settings_view.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -67,6 +71,20 @@ class AppPages {
       name: AppRoutes.saved,
       page: () => const SavedView(),
       binding: SavedBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+    ),
+    GetPage(
+      name: AppRoutes.history,
+      page: () => const HistoryView(),
+      binding: HistoryBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 300),
+    ),
+    GetPage(
+      name: AppRoutes.settings,
+      page: () => const SettingsView(),
+      binding: SettingsBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 300),
     ),

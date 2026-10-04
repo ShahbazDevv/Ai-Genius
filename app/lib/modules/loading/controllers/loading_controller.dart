@@ -3,16 +3,20 @@ import 'package:get/get.dart';
 import '../../../data/mock/mock_gift_repository.dart';
 import '../../../data/models/models.dart';
 import '../../../routes/app_routes.dart';
+import '../../history/controllers/history_controller.dart';
 
 class LoadingController extends GetxController {
   final MockGiftRepository _repository = MockGiftRepository();
 
-  late final GiftRequest request;
+  late GiftRequest request;
+  final GiftRequest? initialRequest;
   final RxInt statusIndex = 0.obs;
   final RxBool hasError = false.obs;
   final RxString errorMessage = ''.obs;
 
   Timer? _statusTimer;
+
+  LoadingController({this.initialRequest});
 
   static const List<String> statusMessages = [
     'Understanding the recipient...',
@@ -26,7 +30,7 @@ class LoadingController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    final args = Get.arguments;
+    final args = initialRequest ?? Get.arguments;
     if (args is GiftRequest) {
       request = args;
     } else {
@@ -61,6 +65,15 @@ class LoadingController extends GetxController {
 
       if (!isClosed) {
         _statusTimer?.cancel();
+
+        // Every completed analysis from the Loading screen must add an item to History
+        if (Get.isRegistered<HistoryController>()) {
+          HistoryController.to.addSearch(
+            request: request,
+            recommendations: results,
+          );
+        }
+
         // Replace loading screen with results screen
         Get.offNamed(
           AppRoutes.results,

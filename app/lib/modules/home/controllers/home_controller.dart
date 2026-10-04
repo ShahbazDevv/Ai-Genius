@@ -4,6 +4,8 @@ import '../../../data/models/gift_request.dart';
 import '../../../routes/app_routes.dart';
 
 class HomeController extends GetxController {
+  static HomeController get to => Get.find<HomeController>();
+
   // Navigation Tab (0: Home, 1: Saved, 2: History)
   final RxInt currentTabIndex = 0.obs;
 

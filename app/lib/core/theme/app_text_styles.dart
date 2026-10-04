@@ -77,6 +77,13 @@ class AppTextStyles {
         color: color,
       );
 
+  static TextStyle caption({Color color = AppColors.darkTextMuted}) =>
+      GoogleFonts.poppins(
+        fontSize: 11.0,
+        fontWeight: FontWeight.w400,
+        color: color,
+      );
+
   // Chip text
   static TextStyle chipSelected({Color color = AppColors.textOnYellow}) =>
       GoogleFonts.poppins(

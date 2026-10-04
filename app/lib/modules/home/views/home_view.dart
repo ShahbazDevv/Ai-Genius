@@ -3,10 +3,11 @@ import 'package:get/get.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../../core/theme/theme_controller.dart';
 import '../../../core/utils/app_utils.dart';
 import '../../../core/widgets/widgets.dart';
+import '../../../routes/app_routes.dart';
 import '../controllers/home_controller.dart';
+import '../../history/views/history_view.dart';
 import '../../saved/views/saved_view.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -447,7 +448,7 @@ class HomeView extends GetView<HomeController> {
               size: 24,
             ),
             tooltip: 'Settings',
-            onPressed: () => _openSettingsSheet(context),
+            onPressed: () => Get.toNamed(AppRoutes.settings),
           ),
         ],
       ),
@@ -504,22 +505,9 @@ class HomeView extends GetView<HomeController> {
     return const SavedView(isEmbedded: true);
   }
 
-  // --- TAB 2: HISTORY PLACEHOLDER ---
+  // --- TAB 2: HISTORY SCREEN ---
   Widget _buildHistoryTab(BuildContext context) {
-    return Column(
-      children: [
-        _buildTopBar(context),
-        Expanded(
-          child: EmptyState(
-            title: 'No Search History',
-            description: 'Past gift searches and recommendations will be stored here.',
-            icon: const Icon(Icons.history_rounded, size: 40, color: AppColors.yellowAccent),
-            buttonText: 'Start a Search',
-            onButtonPressed: () => controller.changeTab(0),
-          ),
-        ),
-      ],
-    );
+    return const HistoryView(isEmbedded: true);
   }
 
   // --- BOTTOM NAVIGATION BAR WITH YELLOW PILL INDICATOR ---
@@ -620,178 +608,5 @@ class HomeView extends GetView<HomeController> {
       ),
     );
   }
-
-  // --- SETTINGS BOTTOM SHEET ---
-  void _openSettingsSheet(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final themeController = ThemeController.to;
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: isDark ? AppColors.darkCardSurface : AppColors.lightCardSurface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: isDark ? AppColors.darkCardBorder : AppColors.lightCardBorder,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Settings',
-                    style: AppTextStyles.headingMedium(
-                      color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close_rounded),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const SectionTitle(
-                title: 'Theme',
-                subtitle: 'Changes instantly without restart',
-                icon: Icon(Icons.palette_rounded, color: AppColors.yellowAccent, size: 20),
-              ),
-              const SizedBox(height: 12),
-              Obx(() {
-                final currentMode = themeController.themeMode;
-                return Row(
-                  children: [
-                    _buildThemeCard(
-                      context: context,
-                      label: 'Dark',
-                      icon: Icons.dark_mode_rounded,
-                      isSelected: currentMode == ThemeMode.dark,
-                      onTap: () => themeController.setThemeMode(ThemeMode.dark),
-                    ),
-                    const SizedBox(width: 10),
-                    _buildThemeCard(
-                      context: context,
-                      label: 'Light',
-                      icon: Icons.light_mode_rounded,
-                      isSelected: currentMode == ThemeMode.light,
-                      onTap: () => themeController.setThemeMode(ThemeMode.light),
-                    ),
-                    const SizedBox(width: 10),
-                    _buildThemeCard(
-                      context: context,
-                      label: 'System',
-                      icon: Icons.settings_brightness_rounded,
-                      isSelected: currentMode == ThemeMode.system,
-                      onTap: () => themeController.setThemeMode(ThemeMode.system),
-                    ),
-                  ],
-                );
-              }),
-              const SizedBox(height: 24),
-              Divider(
-                color: isDark ? AppColors.darkCardBorder : AppColors.lightCardBorder,
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'App Version',
-                    style: AppTextStyles.bodyMedium(
-                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
-                    ),
-                  ),
-                  Text(
-                    '1.0.0',
-                    style: AppTextStyles.bodyMedium(
-                      color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                    ).copyWith(fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'AI-powered gift recommendation app (Flutter + FastAPI + ML)',
-                style: AppTextStyles.bodySmall(
-                  color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildThemeCard({
-    required BuildContext context,
-    required String label,
-    required IconData icon,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final unselectedBg = isDark ? AppColors.darkBgTop : AppColors.lightBgTop;
-    final unselectedBorder = isDark ? AppColors.darkCardBorder : AppColors.lightCardBorder;
-    final unselectedText = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.yellowAccent : unselectedBg,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isSelected ? AppColors.yellowAccent : unselectedBorder,
-              width: 1.2,
-            ),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: AppColors.yellowAccent.withValues(alpha: 0.3),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                color: isSelected ? AppColors.textOnYellow : unselectedText,
-                size: 22,
-              ),
-              const SizedBox(height: 6),
-              Text(
-                label,
-                style: isSelected
-                    ? AppTextStyles.chipSelected(color: AppColors.textOnYellow)
-                    : AppTextStyles.chipUnselected(color: unselectedText),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
+

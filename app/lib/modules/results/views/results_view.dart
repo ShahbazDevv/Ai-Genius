@@ -342,21 +342,25 @@ class _ResultsViewState extends State<ResultsView> with SingleTickerProviderStat
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkCardBorder.withValues(alpha: 0.5)
-                      : AppColors.lightBgBottom,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  '${rec.products.length} products within budget',
-                  style: AppTextStyles.bodySmall(color: highlightColor).copyWith(
-                    fontWeight: FontWeight.w600,
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AppColors.darkCardBorder.withValues(alpha: 0.5)
+                        : AppColors.lightBgBottom,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    '${rec.products.length} products within budget',
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.bodySmall(color: highlightColor).copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
+              const SizedBox(width: 8),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

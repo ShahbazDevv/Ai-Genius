@@ -37,32 +37,41 @@ class SavedView extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    if (!isEmbedded) ...[
-                      IconButton(
-                        icon: Icon(
-                          Icons.arrow_back_rounded,
-                          color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                Expanded(
+                  child: Row(
+                    children: [
+                      if (!isEmbedded) ...[
+                        IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          icon: Icon(
+                            Icons.arrow_back_rounded,
+                            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                          ),
+                          onPressed: () => Get.back(),
                         ),
-                        onPressed: () => Get.back(),
+                        const SizedBox(width: 8),
+                      ],
+                      Flexible(
+                        child: Text(
+                          'Saved Gifts',
+                          style: AppTextStyles.headingLarge(
+                            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                          ).copyWith(fontSize: 20),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 6),
+                      const Icon(
+                        Icons.auto_awesome,
+                        color: AppColors.yellowAccent,
+                        size: 16,
+                      ),
                     ],
-                    Text(
-                      'Saved Gifts',
-                      style: AppTextStyles.headingLarge(
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                      ).copyWith(fontSize: 22),
-                    ),
-                    const SizedBox(width: 6),
-                    const Icon(
-                      Icons.auto_awesome,
-                      color: AppColors.yellowAccent,
-                      size: 18,
-                    ),
-                  ],
+                  ),
                 ),
+                const SizedBox(width: 8),
                 // Offline status badge
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -244,14 +253,18 @@ class SavedView extends StatelessWidget {
                   : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
             ),
             const SizedBox(width: 6),
-            Text(
-              label,
-              style: (isSelected
-                      ? AppTextStyles.chipSelected(color: AppColors.textOnYellow)
-                      : AppTextStyles.chipUnselected(
-                          color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                        ))
-                  .copyWith(fontSize: 12.5),
+            Flexible(
+              child: Text(
+                label,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: (isSelected
+                        ? AppTextStyles.chipSelected(color: AppColors.textOnYellow)
+                        : AppTextStyles.chipUnselected(
+                            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                          ))
+                    .copyWith(fontSize: 12.5),
+              ),
             ),
           ],
         ),
@@ -363,11 +376,14 @@ class SavedView extends StatelessWidget {
                           color: AppColors.yellowAccent,
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          'Link may no longer be valid',
-                          style: AppTextStyles.bodySmall(
-                            color: isDark ? AppColors.yellowAccent : AppColors.lightPrimary,
-                          ).copyWith(fontSize: 9.5, fontWeight: FontWeight.w600),
+                        Flexible(
+                          child: Text(
+                            'Link may no longer be valid',
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.bodySmall(
+                              color: isDark ? AppColors.yellowAccent : AppColors.lightPrimary,
+                            ).copyWith(fontSize: 9.5, fontWeight: FontWeight.w600),
+                          ),
                         ),
                       ],
                     ),
@@ -377,12 +393,16 @@ class SavedView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      formatPkr(product.price.toInt()),
-                      style: AppTextStyles.titleMedium(
-                        color: priceColor,
-                      ).copyWith(fontWeight: FontWeight.w700, fontSize: 14),
+                    Flexible(
+                      child: Text(
+                        formatPkr(product.price.toInt()),
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.titleMedium(
+                          color: priceColor,
+                        ).copyWith(fontWeight: FontWeight.w700, fontSize: 14),
+                      ),
                     ),
+                    const SizedBox(width: 6),
                     // Remove button
                     Material(
                       color: Colors.transparent,

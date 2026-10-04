@@ -23,6 +23,11 @@ class ThemeController extends GetxController {
     _loadThemeFromPrefs();
   }
 
+  Future<ThemeController> init() async {
+    await _loadThemeFromPrefs();
+    return this;
+  }
+
   Future<void> _loadThemeFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     final savedTheme = prefs.getString(_themeKey);

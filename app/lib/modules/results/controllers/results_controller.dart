@@ -4,8 +4,8 @@ import '../../../routes/app_routes.dart';
 import '../../saved/controllers/saved_controller.dart';
 
 class ResultsController extends GetxController {
-  late final GiftRequest request;
-  late final List<Recommendation> recommendations;
+  late GiftRequest request;
+  late List<Recommendation> recommendations;
 
   // In-memory saved categories tracker
   final RxSet<String> savedCategoryIds = <String>{}.obs;

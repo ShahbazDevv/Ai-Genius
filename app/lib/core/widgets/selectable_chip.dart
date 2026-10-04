@@ -80,11 +80,14 @@ class _SelectableChipState extends State<SelectableChip> {
                 widget.icon!,
                 const SizedBox(width: 6),
               ],
-              Text(
-                widget.label,
-                style: widget.isSelected
-                    ? AppTextStyles.chipSelected(color: textColor)
-                    : AppTextStyles.chipUnselected(color: textColor),
+              Flexible(
+                child: Text(
+                  widget.label,
+                  overflow: TextOverflow.ellipsis,
+                  style: widget.isSelected
+                      ? AppTextStyles.chipSelected(color: textColor)
+                      : AppTextStyles.chipUnselected(color: textColor),
+                ),
               ),
             ],
           ),

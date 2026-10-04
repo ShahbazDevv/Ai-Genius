@@ -34,11 +34,14 @@ class ProductListView extends GetView<ProductListController> {
                       onPressed: () => Get.back(),
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      'AI Genius Recommendations',
-                      style: AppTextStyles.titleMedium(
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                      ).copyWith(fontWeight: FontWeight.w600),
+                    Expanded(
+                      child: Text(
+                        'AI Genius Recommendations',
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.titleMedium(
+                          color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                        ).copyWith(fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ],
                 ),
@@ -178,22 +181,27 @@ class ProductListView extends GetView<ProductListController> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        '$count ${count == 1 ? "product" : "products"} available',
-                        style: AppTextStyles.bodySmall(
-                          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
-                        ).copyWith(fontWeight: FontWeight.w500),
+                      Flexible(
+                        child: Text(
+                          '$count ${count == 1 ? "product" : "products"} available',
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.bodySmall(
+                            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                          ).copyWith(fontWeight: FontWeight.w500),
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.verified_rounded,
                             size: 13,
                             color: AppColors.success,
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Strict budget guaranteed',
+                            'Budget safe',
                             style: AppTextStyles.bodySmall(
                               color: AppColors.success,
                             ).copyWith(fontSize: 11, fontWeight: FontWeight.w500),
