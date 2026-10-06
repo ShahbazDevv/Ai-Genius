@@ -1,35 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../data/local/app_database.dart';
 import '../../../data/mock/mock_data.dart';
 import '../../../data/models/models.dart';
+import '../../../data/repositories/history_repository.dart';
 import '../../../routes/app_routes.dart';
 
 class HistoryController extends GetxController {
   static HistoryController get to => Get.find<HistoryController>();
 
+  final HistoryRepository _repository;
+
   final RxList<SearchHistoryItem> historyList = <SearchHistoryItem>[].obs;
+  final RxBool isLoading = false.obs;
+  bool _hasBeenCleared = false;
+  int _mutationCount = 0;
+
+  HistoryController({HistoryRepository? repository})
+      : _repository = repository ??
+            (Get.isRegistered<HistoryRepository>()
+                ? Get.find<HistoryRepository>()
+                : SqliteHistoryRepository(Get.isRegistered<AppDatabase>()
+                    ? Get.find<AppDatabase>()
+                    : AppDatabase())) {
+    _populateDefaultMemorySeeds();
+  }
 
   @override
   void onInit() {
     super.onInit();
-    _seedInitialHistory();
+    init();
   }
 
-  void _seedInitialHistory() {
-    // Seed initial realistic past searches matching design brief Section 8
+  void _populateDefaultMemorySeeds() {
+    if (historyList.isNotEmpty || _hasBeenCleared) return;
     final now = DateTime.now();
 
-    // 1. "Birthday Gift Search" ("Mother · Beauty · PKR 3,500")
     final req1 = GiftRequest(
       relationship: 'Mother',
       ageGroup: '40-49',
       gender: 'Female',
       occasion: 'Birthday',
       budget: 3500.0,
-      interests: ['Beauty', 'Skincare'],
-      giftStyles: ['Elegant', 'Self-Care'],
+      interests: const ['Beauty', 'Skincare'],
+      giftStyles: const ['Elegant', 'Self-Care'],
       additionalDetails: 'Loves calming fragrances and organic skincare.',
     );
 
@@ -69,15 +86,14 @@ class HistoryController extends GetxController {
       ),
     );
 
-    // 2. "Anniversary Gift Search" ("Partner · Technology · PKR 10,000")
     final req2 = GiftRequest(
       relationship: 'Partner',
       ageGroup: '25-29',
       gender: 'Male',
       occasion: 'Anniversary',
       budget: 10000.0,
-      interests: ['Technology', 'Computer Gadgets'],
-      giftStyles: ['Luxury', 'Practical'],
+      interests: const ['Technology', 'Computer Gadgets'],
+      giftStyles: const ['Luxury', 'Practical'],
     );
 
     final recs2 = [
@@ -105,23 +121,151 @@ class HistoryController extends GetxController {
     );
   }
 
-  /// Adds a completed analysis from the Loading screen to the top of the history list
-  void addSearch({
+  Future<void> init() async {
+    final startCount = _mutationCount;
+    isLoading.value = true;
+    try {
+      final items = await _repository.getAllHistory();
+      if (_mutationCount != startCount) return;
+
+      final prefs = await SharedPreferences.getInstance();
+      final isSeeded = prefs.getBool('drift_history_seeded') ?? false;
+
+      if (_hasBeenCleared || _mutationCount != startCount) {
+        historyList.clear();
+        return;
+      }
+
+      if (!isSeeded && items.isEmpty) {
+        await _seedInitialHistory();
+        await prefs.setBool('drift_history_seeded', true);
+      } else {
+        if (!_hasBeenCleared && _mutationCount == startCount) {
+          historyList.assignAll(items);
+        }
+      }
+    } catch (_) {
+      if (historyList.isEmpty && !_hasBeenCleared && _mutationCount == startCount) {
+        _populateDefaultMemorySeeds();
+      }
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> _seedInitialHistory() async {
+    final now = DateTime.now();
+
+    final req1 = GiftRequest(
+      relationship: 'Mother',
+      ageGroup: '40-49',
+      gender: 'Female',
+      occasion: 'Birthday',
+      budget: 3500.0,
+      interests: const ['Beauty', 'Skincare'],
+      giftStyles: const ['Elegant', 'Self-Care'],
+      additionalDetails: 'Loves calming fragrances and organic skincare.',
+    );
+
+    final recs1 = [
+      Recommendation(
+        id: 'rec_skincare_seed',
+        category: MockData.categories[0].copyWith(
+          productCount: 3,
+          reason: 'Matches beauty & skincare interest for mother on birthday.',
+        ),
+        products: MockData.products
+            .where((p) => p.category == 'cat_skincare' && p.price <= 3500)
+            .toList(),
+        rank: 1,
+        matchReason: 'Matches beauty & skincare interest for mother on birthday.',
+      ),
+      Recommendation(
+        id: 'rec_fragrance_seed',
+        category: MockData.categories[4].copyWith(
+          productCount: 3,
+          reason: 'Sensory self-care luxury with relaxing floral notes.',
+        ),
+        products: MockData.products
+            .where((p) => p.category == 'cat_fragrance' && p.price <= 3500)
+            .toList(),
+        rank: 2,
+        matchReason: 'Sensory self-care luxury with relaxing floral notes.',
+      ),
+    ];
+
+    final item1 = SearchHistoryItem.create(
+      request: req1,
+      recommendations: recs1,
+      createdAt: now.subtract(const Duration(hours: 2, minutes: 15)),
+      customId: 'seed_search_1',
+    );
+    await _repository.addHistoryItem(item1);
+
+    final req2 = GiftRequest(
+      relationship: 'Partner',
+      ageGroup: '25-29',
+      gender: 'Male',
+      occasion: 'Anniversary',
+      budget: 10000.0,
+      interests: const ['Technology', 'Computer Gadgets'],
+      giftStyles: const ['Luxury', 'Practical'],
+    );
+
+    final recs2 = [
+      Recommendation(
+        id: 'rec_tech_seed',
+        category: MockData.categories[1].copyWith(
+          productCount: 4,
+          reason: 'Top wireless audio and tech accessories within budget.',
+        ),
+        products: MockData.products
+            .where((p) => p.category == 'cat_tech' && p.price <= 10000)
+            .toList(),
+        rank: 1,
+        matchReason: 'Top wireless audio and tech accessories within budget.',
+      ),
+    ];
+
+    final item2 = SearchHistoryItem.create(
+      request: req2,
+      recommendations: recs2,
+      createdAt: now.subtract(const Duration(days: 1, hours: 3)),
+      customId: 'seed_search_2',
+    );
+    await _repository.addHistoryItem(item2);
+
+    final dbItems = await _repository.getAllHistory();
+    historyList.assignAll(dbItems);
+  }
+
+  /// Adds a completed analysis from the Loading screen to the top of the history list and stores in SQLite
+  Future<void> addSearch({
     required GiftRequest request,
     required List<Recommendation> recommendations,
-  }) {
+  }) async {
+    _mutationCount++;
+    _hasBeenCleared = false;
     final newItem = SearchHistoryItem.create(
       request: request,
       recommendations: recommendations,
     );
     historyList.insert(0, newItem);
+    await _repository.addHistoryItem(newItem);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('drift_history_seeded', true);
   }
 
-  /// Swipe or manual deletion with snackbar UNDO
-  void deleteSearch(String id) {
+  /// Delete one item with database persistence and snackbar UNDO
+  Future<void> deleteSearch(String id) async {
+    _mutationCount++;
     final index = historyList.indexWhere((item) => item.id == id);
     if (index >= 0) {
       final removed = historyList.removeAt(index);
+      await _repository.deleteHistoryItem(id);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('drift_history_seeded', true);
+
       if (Get.context != null) {
         Get.snackbar(
           'Search Removed',
@@ -133,8 +277,10 @@ class HistoryController extends GetxController {
           margin: const EdgeInsets.all(16),
           borderRadius: 14,
           mainButton: TextButton(
-            onPressed: () {
+            onPressed: () async {
+              _mutationCount++;
               historyList.insert(index, removed);
+              await _repository.addHistoryItem(removed);
               if (Get.isSnackbarOpen) {
                 Get.back();
               }
@@ -152,7 +298,7 @@ class HistoryController extends GetxController {
     }
   }
 
-  /// Reopens the Results screen with this search's data
+  /// Reopens the Results screen with this search's data (open an item)
   void reopenSearch(SearchHistoryItem item) {
     if (item.recommendations.isNotEmpty) {
       Get.toNamed(
@@ -171,9 +317,15 @@ class HistoryController extends GetxController {
     }
   }
 
-  /// Clear all searches
-  void clearAll() {
+  /// Clear all searches from memory and SQLite database
+  Future<void> clearAll() async {
+    _mutationCount++;
+    _hasBeenCleared = true;
     historyList.clear();
+    await _repository.clearHistory();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('drift_history_seeded', true);
+
     if (Get.context != null) {
       Get.snackbar(
         'History Cleared',

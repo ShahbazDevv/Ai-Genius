@@ -298,7 +298,23 @@ class HistoryView extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(width: 10),
+                const SizedBox(width: 4),
+
+                // Delete one item button
+                IconButton(
+                  key: Key('delete_history_${item.id}'),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                  icon: Icon(
+                    Icons.delete_outline_rounded,
+                    size: 20,
+                    color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                  ),
+                  tooltip: 'Delete search',
+                  onPressed: () => controller.deleteSearch(item.id),
+                ),
+
+                const SizedBox(width: 4),
 
                 // Reopen chevron indicator
                 Container(

@@ -314,12 +314,17 @@ class SavedView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      product.storeName,
-                      style: AppTextStyles.bodySmall(
-                        color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-                      ).copyWith(fontSize: 11, fontWeight: FontWeight.w500),
+                    Expanded(
+                      child: Text(
+                        product.storeName,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: AppTextStyles.bodySmall(
+                          color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                        ).copyWith(fontSize: 11, fontWeight: FontWeight.w500),
+                      ),
                     ),
+                    const SizedBox(width: 4),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
