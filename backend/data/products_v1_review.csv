@@ -1,0 +1,49 @@
+row_number,name,status,page_price,note
+1,Ponds Pure Bright Facial Foam 100g & Bright Beauty 50g Combo,NOT_FOUND,,HTTP 404. Product listing removed from Daraz.
+2,Vince Organix Glow & Radiance Skincare Kit,NOT_FOUND,,HTTP 404. Product listing removed from Daraz.
+3,Conatural Intense Luster Hair & Skincare Combo Pack of 2,NOT_FOUND,,HTTP 404. Product listing removed from Daraz.
+4,The Ordinary Anti Aging & Brightening Complete Skincare Set,NOT_FOUND,,HTTP 404. Product listing removed from Daraz.
+5,Professional All-In-One Bridal Makeup Gift Kit,OK,899,Price matches. Product confirmed. CSV image_url hash is wrong (shared) but product is real.
+6,13 in 1 Complete Makeup Gift Set for Girls & Women,OK,2399,Page title and price match.
+7,Full Professional 190 Color Palette Makeup Vanity Set,OK,6799,Page title: Makeup Kit Full Professional...190 Color. Price matches.
+8,Miss Rose 140 Color All-In-One Vanity Case Makeup Kit,OK,10000,Page title: 140 Color All-In-One Makeup Kit. Price matches.
+9,Daily Skincare Gift Pack Face Wash Day Cream & Serum Kit,OK,799,Price matches. Page title: Hot Deals Gift Pack Face Wash Day Cream Serum Kit.
+10,Scents N Secrets Romanian Blue Bath & Body Gift Box,OK,3411,Price matches. Page title confirms product.
+11,Scents N Secrets I Love Oud Bath & Body Luxury Gift Box,SUSPICIOUS,3667,Price matches but CSV image_url (74ebff22 hash) is shared with Row 45 dry fruits box. Image in CSV is wrong.
+12,Remington PG180 Pilot Grooming Self-Care Kit,OK,9000,Price matches. Page: Remington PG180 Grooming Kit.
+13,Portable Tech Travel Cable Organizer Waterproof Storage Case,OK,729,Price matches. Page title confirms cable organizer.
+14,3-in-1 Fast Wireless Charging Station Dock for Phone & Earbuds,SUSPICIOUS,2499,PAGE SHOWS DIFFERENT PRODUCT: Rechargeable Transparent Fan with 3-Speed Wind Night Light Nano Mist. URL i489397923 now hosts a fan/humidifier. Price coincidentally matches but product is completely wrong.
+15,A4Tech HS-50 ComfortFit Stereo Headset with Noise Cancelling Mic,OK,4099,Price matches. Page: A4 TECH HS-50 Comfort Fit Stereo HeadSet.
+16,120W Fast Charging 10000mAh Power Bank Digital Display,SUSPICIOUS,10000,Price matches but page shows different product: Premium Tech Gift Pack ANC Buzzer Air-Pods Black edition + 120W. URL hosts an AirPods+charger combo not a standalone power bank. CSV description is wrong.
+17,Xiaomi 67W Turbo Charger Adapter with 1m Fast Cable Bundle,OK,1377,Price matches. Page confirms Xiaomi 67W charger bundle.
+18,3-in-1 Mobile Gaming Accessories Bundle for PUBG Mobile,SUSPICIOUS,2897,PAGE IS DIFFERENT PRODUCT: High-Quality Gaming Keyboard and Mouse Combo with RGB Side LED Panel for PC/laptop. CSV describes mobile triggers/thumb sleeves. Wrong product linked. Category mobile_accessories_bundle does not fit PC keyboard+mouse.
+19,AWA 12-in-1 Smartphone Universal Accessory Mega Bundle,SUSPICIOUS,4200,PAGE IS DIFFERENT PRODUCT: AWA Handfree Bundle Pack - 12 Items High-Quality Earphones. CSV describes phone stand/car mount/OTG/ring light. Actual product is earphones. Wrong product linked.
+20,WiWU 4-in-1 Tech Travel Organizer Combo Kit 10000mAh,OK,9190,Price matches. Page: WiWU 4-in-1 Tech Travel Combo Set Travel Organizer Pouch 10000mAh.
+21,Pack of 6 Self Help & Motivation Bestseller Books Bundle,OK,799,Price matches. Page confirms self-help books bundle.
+22,Dandadan Volumes 1-5 Ultimate Manga Collection Set,OK,2999,Price matches. Page: DANDADAN Volumes 1-5 Ultimate Book Collection Manga Set.
+23,A Court of Thorns and Roses 5 Book Series Bundle Sarah J Maas,OK,5345,Price matches. Page title matches exactly.
+24,The Wardstone Chronicles Spook s Complete 13 Book Set,OK,7145,Price matches. Page: The Spooks Books 1-13 Complete Wardstone Chronicles Collection.
+25,11-Piece Power Resistance Bands Workout Training Set,OK,1098,Price matches. Page: Power Resistance Band Set of 11 Piece.
+26,Anti-Slip 10mm Extra Thick Yoga & Exercise Mat 72x24 Inch,OK,1899,Price matches. Page confirms yoga mat.
+27,Adjustable Multi-Position Weight Bench Press,OK,4799,Price matches. Page: HIGH QUALITY WEIGHT BENCH PRESS MULTI BENCH HOME FITNESS EQUIPMENT.
+28,Heavy-Duty Incline Decline Straight Workout Bench Press,OK,8799,Price matches. Page: best Bench press Best Workout Incline Decline straight Position.
+29,Artificial Bridal Fashion Jewelry Set with Matching Earrings,OK,662,Price matches. Page: Artificial Bridal Jewelry Set for Girls/Women.
+30,Zircon Micro-Setting Bridal Pendant & Earrings Jewelry Set,PRICE_DIFFERENT,1550,Page: Zarcoon bridal set. Page price 1550 vs CSV 1599. Name also different - page says Zarcoon not Zircon Micro-Setting.
+31,Kundan & Pearl Heritage Bridal Jewelry Set,OK,3550,Price matches. Page: Bridal Jewelry Set (generic title). Product type matches.
+32,Premium Gold-Plated Long-Lasting Bridal Jewelry Set,PRICE_DIFFERENT,7999,Page price 7999 vs CSV 9999. Difference of 2000 PKR. Page: Bridal Set New Stylish Long Lasting Polish Famous Design.
+33,Saki Sports Cricket Bat 2026 Full Size Tape Ball Bat,OK,1049,Price matches. Page: Saki Sports Cricket Bat 2026 Tape Ball Bat.
+34,Personal Cricket Kit Bag Duffle Bag Large Size with Bat Pocket,OK,1559,Price matches. Page: personal cricket kit bag new balance duffle bag large size.
+35,SS TON Professional Editions Hard Ball Cricket Bat,OK,3987,Price matches. Page: SS TON 2023 Editions Hard Ball Cricket Bat. Minor name difference (2023 vs Professional Editions).
+36,Taimoor F Plus Premium English Willow Cricket Bat Full Size,OK,7900,Price matches. CSV image_url (5a2d6771 hash) shared with rows 44 and 48 - CSV image is wrong but product is confirmed.
+37,RGB 7-Color Backlit Precision Wired Gaming Mouse,PRICE_DIFFERENT,579,Page price 579 PKR vs CSV price 1397 PKR. Difference of 818 PKR.
+38,PRO II RGB Stereo Gaming Headphones with Noise Cancelling Mic,PRICE_DIFFERENT,1572,Page price 1572 PKR vs CSV price 2297 PKR. Difference of 725 PKR.
+39,RGB K61 60% Compact Mechanical Gaming Keyboard Blue Switch,OK,3948,Page price 3948 vs CSV 3949 - 1 PKR rounding difference. Effectively OK.
+40,FIRE Light 104-Key Full Size Mechanical Gaming Keyboard,OK,14000,Price matches. CSV image_url (0be91db4 hash) shared with Row 5 makeup kit - CSV image is wrong.
+41,Welcome to Our Sweet Home Wooden Hanging Wall Art,OK,599,Price matches. Page confirms wooden wall art.
+42,Luxury Wrought Iron Hand-Painted Flower Wall Hanging Sculpture,OK,2650,Price matches. Page: New Chinese Luxury Wrought Iron Wall Hanging Hand-Painted Flower.
+43,Modern Running Horses Canvas Framed Wall Art Painting,PRICE_DIFFERENT,3999,Page price 3999 vs CSV 4999. Difference of 1000 PKR. CSV image hash (432095f6) shared with Row 31 jewelry.
+44,Nordic Geometric Deer Head Wall Mount Decor Statue,OK,10499,Price matches. Page: Deer Head Wall Mount Decor. CSV image hash (5a2d6771) shared with rows 36 and 48 - CSV image wrong.
+45,Premium Pack of 4 Healthy Mixed Dry Fruits & Nuts Combo Box,OK,1235,Price matches. Page: Premium Pack of 4 Dry Fruits Healthy Mixed Nuts Combo. CSV image hash (74ebff22) shared with Row 11 bath product - CSV image wrong.
+46,6-in-1 Premium Mixed Dry Fruits & Nuts Gift Box 690g,OK,1999,Price matches. CSV image hash (16ee1b1c) shared with Row 38 gaming headphones - CSV image wrong.
+47,Mix Dry Fruit 5-Sectional Gourmet Nuts Gift Box 1 KG,OK,4000,Price matches. CSV image hash (bb430d85) shared with Row 37 gaming mouse - CSV image wrong.
+48,Hexagonal Seven-Section Handcrafted Wooden Dry Fruit Royal Hamper Box,OK,7500,Price matches. CSV image hash (5a2d6771) shared with rows 36 and 44 - CSV image wrong.
