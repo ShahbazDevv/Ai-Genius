@@ -1,1 +1,3 @@
-"""Business logic and services package."""
+from app.services.recommender import RecommendationService
+
+__all__ = ["RecommendationService"]
