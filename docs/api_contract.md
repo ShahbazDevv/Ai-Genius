@@ -87,6 +87,7 @@ Response 200: one product object (same shape as above). 404 if not found.
 ```
 Codes and HTTP status:
 - VALIDATION_ERROR: 422
+- VALIDATION_ERROR: 413 (request body larger than 64 KB, message "Request is too large")
 - NOT_FOUND: 404
 - RATE_LIMITED: 429
 - DATABASE_ERROR: 503

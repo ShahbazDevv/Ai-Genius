@@ -324,6 +324,54 @@ def test_rate_limiting_35_requests():
         limiter.reset()
 
 
+def test_rate_limiter_uses_forwarded_for_client_ip():
+    """Confirms the rate limiter isolates quotas by X-Forwarded-For IP address.
+
+    When one client IP exhausts their limit (30 reqs/min), a different client IP
+    behind the Render proxy still succeeds with HTTP 200.
+    """
+    from app.core.limiter import limiter
+
+    ip_exhausted = "203.0.113.195"
+    ip_fresh = "198.51.100.42"
+    payload = {
+        "relationship": "mother",
+        "age_group": "40_49",
+        "occasion": "birthday",
+        "budget": 3500,
+        "interests": ["beauty"],
+    }
+
+    try:
+        limiter.reset()
+        # Exhaust quota for ip_exhausted
+        got_429 = False
+        for _ in range(35):
+            resp = client.post(
+                "/api/v1/recommendations",
+                json=payload,
+                headers={"X-Forwarded-For": ip_exhausted},
+            )
+            if resp.status_code == 429:
+                got_429 = True
+                break
+
+        assert got_429, "Expected ip_exhausted to be rate-limited at 30+ requests"
+
+        # Now send request from ip_fresh; must succeed (200), not be blocked by ip_exhausted
+        resp_fresh = client.post(
+            "/api/v1/recommendations",
+            json=payload,
+            headers={"X-Forwarded-For": ip_fresh},
+        )
+        assert resp_fresh.status_code == 200, (
+            f"ip_fresh should not be rate-limited, but got: {resp_fresh.status_code}"
+        )
+    finally:
+        limiter.reset()
+
+
+
 def test_recommendations_matches_nothing():
     # Budget 500 where no qualifying items exist below PKR 500
     payload = {
