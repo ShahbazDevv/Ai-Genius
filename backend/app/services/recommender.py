@@ -111,8 +111,10 @@ class RecommendationService:
         self,
         request: RecommendationRequest,
         categories_data: Optional[Sequence[Any]] = None,
+        request_id: Optional[str] = None,
     ) -> RecommendationResponse:
         """Executes the recommendation pipeline with category qualification rule."""
+        resp_id = request_id or str(uuid.uuid4())
         req_budget = request.budget
         req_relationship = (
             request.relationship.value
@@ -279,7 +281,7 @@ class RecommendationService:
         # Step 7: If no category qualifies, return empty categories list
         if not selected_categories:
             return RecommendationResponse(
-                request_id=str(uuid.uuid4()),
+                request_id=resp_id,
                 budget=req_budget,
                 currency="PKR",
                 categories=[],
@@ -372,7 +374,7 @@ class RecommendationService:
             )
 
         return RecommendationResponse(
-            request_id=str(uuid.uuid4()),
+            request_id=resp_id,
             budget=req_budget,
             currency="PKR",
             categories=recommended_categories,

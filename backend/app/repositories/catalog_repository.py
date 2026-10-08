@@ -44,3 +44,19 @@ class CatalogRepository:
             cat.products = products_by_category.get(cat.id, [])
 
         return categories
+
+    def get_product_by_id(self, product_id: str) -> Optional[Product]:
+        """Queries a single active product by its UUID ID string."""
+        import uuid
+
+        try:
+            prod_uuid = uuid.UUID(product_id)
+        except (ValueError, TypeError, AttributeError):
+            return None
+
+        return (
+            self.db.query(Product)
+            .filter(Product.id == prod_uuid, Product.is_active.is_(True))
+            .first()
+        )
+

@@ -1,0 +1,7 @@
+{
+  "relationship": "friend",
+  "age_group": "20_24",
+  "occasion": "eid",
+  "budget": 5000,
+  "interests": ["quantum_computing"]
+}

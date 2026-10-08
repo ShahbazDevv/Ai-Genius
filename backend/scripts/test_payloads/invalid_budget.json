@@ -1,0 +1,9 @@
+{
+  "relationship": "mother",
+  "age_group": "40_49",
+  "gender": "female",
+  "occasion": "birthday",
+  "budget": 200,
+  "interests": ["beauty", "skincare"],
+  "gift_styles": ["elegant", "practical"]
+}
