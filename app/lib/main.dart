@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'core/network/api_client.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'data/local/app_database.dart';
+import 'data/repositories/api_gift_repository.dart';
+import 'data/repositories/gift_repository.dart';
 import 'data/repositories/history_repository.dart';
 import 'data/repositories/saved_repository.dart';
 import 'modules/history/controllers/history_controller.dart';
@@ -23,6 +26,12 @@ void main() async {
 
   final historyRepository = SqliteHistoryRepository(database);
   Get.put<HistoryRepository>(historyRepository, permanent: true);
+
+  final apiClient = ApiClient();
+  Get.put<ApiClient>(apiClient, permanent: true);
+
+  final giftRepository = ApiGiftRepository(client: apiClient);
+  Get.put<GiftRepository>(giftRepository, permanent: true);
 
   final savedController = SavedController(repository: savedRepository);
   await savedController.init();

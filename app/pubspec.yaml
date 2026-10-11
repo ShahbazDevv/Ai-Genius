@@ -45,6 +45,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.6.0+eol
   path_provider: ^2.1.6
   path: ^1.9.1
+  dio: ^5.8.0+1
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +59,15 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   drift_dev: ^2.35.1
   build_runner: ^2.15.1
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/reference/launcher.jpg"
+  adaptive_icon_background: "#171A29"
+  adaptive_icon_foreground: "assets/reference/launcher.jpg"
+  remove_alpha_ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

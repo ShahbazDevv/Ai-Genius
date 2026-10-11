@@ -17,15 +17,26 @@ class Recommendation {
   });
 
   factory Recommendation.fromJson(Map<String, dynamic> json) {
+    GiftCategory category;
+    if (json.containsKey('category') && json['category'] is Map) {
+      category = GiftCategory.fromJson(json['category'] as Map<String, dynamic>);
+    } else {
+      category = GiftCategory.fromJson(json);
+    }
+
+    final productsList = (json['products'] as List<dynamic>?)
+            ?.map((e) => Product.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [];
+
+    final resolvedReason = (json['match_reason'] ?? json['matchReason'] ?? json['reason']) as String?;
+
     return Recommendation(
-      id: json['id'] as String? ?? '',
-      category: GiftCategory.fromJson(json['category'] as Map<String, dynamic>? ?? {}),
-      products: (json['products'] as List<dynamic>?)
-              ?.map((e) => Product.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
-      rank: json['rank'] as int? ?? 1,
-      matchReason: json['matchReason'] as String?,
+      id: json['id'] as String? ?? 'rec_${category.id}',
+      category: category,
+      products: productsList,
+      rank: (json['rank'] as num?)?.toInt() ?? 1,
+      matchReason: resolvedReason ?? category.reason,
     );
   }
 
@@ -35,7 +46,7 @@ class Recommendation {
       'category': category.toJson(),
       'products': products.map((e) => e.toJson()).toList(),
       'rank': rank,
-      'matchReason': matchReason,
+      'match_reason': matchReason,
     };
   }
 

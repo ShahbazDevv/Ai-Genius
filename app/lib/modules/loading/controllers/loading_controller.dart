@@ -1,22 +1,30 @@
 import 'dart:async';
 import 'package:get/get.dart';
+import '../../../core/network/api_exception.dart';
 import '../../../data/mock/mock_gift_repository.dart';
 import '../../../data/models/models.dart';
+import '../../../data/repositories/gift_repository.dart';
 import '../../../routes/app_routes.dart';
 import '../../history/controllers/history_controller.dart';
 
 class LoadingController extends GetxController {
-  final MockGiftRepository _repository = MockGiftRepository();
+  final GiftRepository _repository;
 
   late GiftRequest request;
   final GiftRequest? initialRequest;
   final RxInt statusIndex = 0.obs;
   final RxBool hasError = false.obs;
   final RxString errorMessage = ''.obs;
+  final RxBool showServerWakeupNotice = false.obs;
 
   Timer? _statusTimer;
+  int _secondsElapsed = 0;
 
-  LoadingController({this.initialRequest});
+  LoadingController({GiftRepository? repository, this.initialRequest})
+      : _repository = repository ??
+            (Get.isRegistered<GiftRepository>()
+                ? Get.find<GiftRepository>()
+                : MockGiftRepository());
 
   static const List<String> statusMessages = [
     'Understanding the recipient...',
@@ -45,10 +53,19 @@ class LoadingController extends GetxController {
     loadRecommendations();
   }
 
-  void _startStatusTimer() {
+  void _startTimers() {
     _statusTimer?.cancel();
+
     statusIndex.value = 0;
+    _secondsElapsed = 0;
+    showServerWakeupNotice.value = false;
+
+    // Status rotation and 8s wakeup tracking in a single periodic timer
     _statusTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _secondsElapsed++;
+      if (_secondsElapsed >= 8) {
+        showServerWakeupNotice.value = true;
+      }
       if (statusIndex.value < statusMessages.length - 1) {
         statusIndex.value++;
       }
@@ -58,7 +75,7 @@ class LoadingController extends GetxController {
   Future<void> loadRecommendations() async {
     hasError.value = false;
     errorMessage.value = '';
-    _startStatusTimer();
+    _startTimers();
 
     try {
       final results = await _repository.getRecommendations(request);
@@ -87,7 +104,11 @@ class LoadingController extends GetxController {
       if (!isClosed) {
         _statusTimer?.cancel();
         hasError.value = true;
-        errorMessage.value = 'Failed to generate recommendations. Please try again.';
+        if (e is ApiException) {
+          errorMessage.value = e.message;
+        } else {
+          errorMessage.value = 'Failed to generate recommendations. Please try again.';
+        }
       }
     }
   }

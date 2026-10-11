@@ -166,6 +166,46 @@ class _LoadingViewState extends State<LoadingView> with SingleTickerProviderStat
 
             const SizedBox(height: 16),
 
+            // Friendly line displayed after 8s: "Waking up the AI server, this can take a minute."
+            Obx(() {
+              if (!controller.showServerWakeupNotice.value) {
+                return const SizedBox.shrink();
+              }
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: AppColors.yellowSoftTint,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: AppColors.yellowAccent.withValues(alpha: 0.35),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.hourglass_top_rounded,
+                        size: 16,
+                        color: AppColors.yellowAccent,
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          'Waking up the AI server, this can take a minute.',
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.bodySmall(
+                            color: AppColors.yellowAccent,
+                          ).copyWith(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+
             // Summary chip row of user's choices
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

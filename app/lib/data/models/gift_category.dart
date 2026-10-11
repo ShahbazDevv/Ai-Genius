@@ -18,17 +18,18 @@ class GiftCategory {
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? '',
       reason: json['reason'] as String? ?? '',
-      productCount: json['productCount'] as int? ?? 0,
+      productCount: (json['product_count'] ?? json['productCount'] as num?)?.toInt() ?? 0,
       icon: json['icon'] as String? ?? 'card_giftcard',
     );
   }
 
+  /// Serializes to JSON matching docs/api_contract.md EXACTLY.
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
       'reason': reason,
-      'productCount': productCount,
+      'product_count': productCount,
       'icon': icon,
     };
   }

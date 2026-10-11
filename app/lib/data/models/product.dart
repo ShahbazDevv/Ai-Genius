@@ -24,11 +24,12 @@ class Product {
     required this.storeUrl,
     required this.category,
     this.tags = const [],
-    this.availability = 'In stock',
-    this.source = 'Curated catalog',
+    this.availability = 'in_stock',
+    this.source = 'curated',
     required this.lastUpdated,
   });
 
+  /// Factory creating from JSON matching docs/api_contract.md and local storage formats.
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       id: json['id'] as String? ?? '',
@@ -36,35 +37,37 @@ class Product {
       description: json['description'] as String? ?? '',
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
       currency: json['currency'] as String? ?? 'PKR',
-      imageUrl: json['imageUrl'] as String? ?? '',
-      storeName: json['storeName'] as String? ?? '',
-      storeUrl: json['storeUrl'] as String? ?? '',
-      category: json['category'] as String? ?? '',
+      imageUrl: (json['image_url'] ?? json['imageUrl'] as String?) ?? '',
+      storeName: (json['store_name'] ?? json['storeName'] as String?) ?? '',
+      storeUrl: (json['store_url'] ?? json['storeUrl'] as String?) ?? '',
+      category: (json['category_id'] ?? json['category'] as String?) ?? '',
       tags: (json['tags'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
-      availability: json['availability'] as String? ?? 'In stock',
-      source: json['source'] as String? ?? 'Curated catalog',
-      lastUpdated: json['lastUpdated'] as String? ?? '',
+      availability: json['availability'] as String? ?? 'in_stock',
+      source: json['source'] as String? ?? 'curated',
+      lastUpdated: (json['last_updated'] ?? json['lastUpdated'] as String?) ?? '',
     );
   }
 
+  /// Serializes to JSON matching docs/api_contract.md EXACTLY.
+  /// Keys: id, name, description, price (int), currency, image_url, store_name, store_url, category_id, tags, availability, source, last_updated.
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
       'description': description,
-      'price': price,
+      'price': price.toInt(),
       'currency': currency,
-      'imageUrl': imageUrl,
-      'storeName': storeName,
-      'storeUrl': storeUrl,
-      'category': category,
+      'image_url': imageUrl.isEmpty ? null : imageUrl,
+      'store_name': storeName,
+      'store_url': storeUrl,
+      'category_id': category,
       'tags': tags,
       'availability': availability,
       'source': source,
-      'lastUpdated': lastUpdated,
+      'last_updated': lastUpdated,
     };
   }
 
