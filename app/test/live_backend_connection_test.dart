@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:app/core/config/app_config.dart';
 import 'package:app/data/models/models.dart';
 import 'package:app/data/repositories/api_gift_repository.dart';
 
@@ -15,6 +14,7 @@ class RealConnectionConnectivity implements Connectivity {
 
 class RealHttpOverrides extends HttpOverrides {
   @override
+  // ignore: unnecessary_overrides
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context);
   }

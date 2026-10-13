@@ -4,6 +4,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/utils/app_utils.dart';
+import '../../../core/utils/category_icon_helper.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../../data/models/models.dart';
 import '../controllers/results_controller.dart';
@@ -35,30 +36,7 @@ class _ResultsViewState extends State<ResultsView> with SingleTickerProviderStat
     super.dispose();
   }
 
-  IconData _getCategoryIcon(String iconName) {
-    switch (iconName) {
-      case 'spa':
-        return Icons.spa_rounded;
-      case 'devices':
-        return Icons.devices_rounded;
-      case 'menu_book':
-        return Icons.menu_book_rounded;
-      case 'checkroom':
-        return Icons.checkroom_rounded;
-      case 'local_florist':
-        return Icons.local_florist_rounded;
-      case 'fitness_center':
-        return Icons.fitness_center_rounded;
-      case 'sports_esports':
-        return Icons.sports_esports_rounded;
-      case 'coffee':
-        return Icons.coffee_rounded;
-      case 'diamond':
-        return Icons.diamond_rounded;
-      default:
-        return Icons.card_giftcard_rounded;
-    }
-  }
+  IconData _getCategoryIcon(String? iconName) => CategoryIconHelper.getIcon(iconName);
 
   @override
   Widget build(BuildContext context) {
