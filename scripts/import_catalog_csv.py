@@ -3,7 +3,7 @@ import sys
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 # Set up paths
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -47,6 +47,43 @@ def parse_pipe_separated(val: str) -> List[str]:
     if not val or not val.strip():
         return []
     return [item.strip() for item in val.split("|") if item.strip()]
+def validate_category_row(
+    row: Dict[str, str], row_idx: int, seen_ids: Set[str]
+) -> Tuple[bool, List[str]]:
+    """Validate a single category row according to api contract and business rules."""
+    errors: List[str] = []
+
+    cid = row.get("id", "").strip()
+    if not cid:
+        errors.append("Category id is empty")
+    elif cid in seen_ids:
+        errors.append(f"Duplicate category id: {cid}")
+
+    name = row.get("name", "").strip()
+    if not name:
+        errors.append("Category name is empty")
+
+    interests = parse_pipe_separated(row.get("related_interests", ""))
+    invalid_interests = [i for i in interests if i not in ALLOWED_INTERESTS]
+    if invalid_interests:
+        errors.append(f"invalid related_interests: {invalid_interests}")
+
+    occasions = parse_pipe_separated(row.get("related_occasions", ""))
+    invalid_occasions = [o for o in occasions if o not in ALLOWED_OCCASIONS]
+    if invalid_occasions:
+        errors.append(f"invalid related_occasions: {invalid_occasions}")
+
+    relationships = parse_pipe_separated(row.get("related_relationships", ""))
+    invalid_relationships = [r for r in relationships if r not in ALLOWED_RELATIONSHIPS]
+    if invalid_relationships:
+        errors.append(f"invalid related_relationships: {invalid_relationships}")
+
+    styles = parse_pipe_separated(row.get("style_tags", ""))
+    invalid_styles = [s for s in styles if s not in ALLOWED_STYLES]
+    if invalid_styles:
+        errors.append(f"invalid style_tags: {invalid_styles}")
+
+    return (len(errors) == 0, errors)
 
 
 def validate_product_row(
@@ -123,7 +160,8 @@ def validate_product_row(
 
 def import_catalog(
     categories_csv_path: Path,
-    products_csv_path: Path
+    products_csv_path: Optional[Path] = None,
+    categories_only: bool = False,
 ) -> None:
     """Imports categories and products CSV files into database safely with upsert."""
     from app.core.database import SessionLocal
@@ -134,15 +172,16 @@ def import_catalog(
         print(f"Error: Categories CSV not found at {categories_csv_path}")
         sys.exit(1)
 
-    if not products_csv_path.exists():
-        print(f"Error: Products CSV not found at {products_csv_path}")
-        sys.exit(1)
+    if not categories_only:
+        if products_csv_path is None or not products_csv_path.exists():
+            print(f"Error: Products CSV not found at {products_csv_path}")
+            sys.exit(1)
 
     db = SessionLocal()
     now_utc = datetime.now(timezone.utc)
 
     print("==================================================")
-    print("Catalog Import: Categories & Products")
+    print("Catalog Import: Categories" if categories_only else "Catalog Import: Categories & Products")
     print("==================================================")
 
     # ----------------------------------------------------
@@ -151,14 +190,29 @@ def import_catalog(
     print(f"\n1. Reading categories from: {categories_csv_path.name}")
     valid_category_ids: Set[str] = set()
     category_rows: List[Dict[str, str]] = []
+    seen_category_ids: Set[str] = set()
+    category_errors: List[Tuple[int, str, List[str]]] = []
 
     with open(categories_csv_path, mode="r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
-        for row in reader:
+        for idx, row in enumerate(reader, start=2):
             category_rows.append(row)
             cid = row.get("id", "").strip()
+            is_valid, errors = validate_category_row(row, idx, seen_category_ids)
+            if not is_valid:
+                category_errors.append((idx, cid, errors))
             if cid:
+                seen_category_ids.add(cid)
                 valid_category_ids.add(cid)
+
+    if category_errors:
+        print(f"\nCategory validation failed ({len(category_errors)} errors):")
+        for idx, cid, errs in category_errors:
+            print(f"Row {idx} ({cid}): {', '.join(errs)}")
+        db.close()
+        sys.exit(1)
+
+    print(f"Categories validation passed: {len(category_rows)} categories validated successfully.")
 
     categories_imported = 0
     categories_updated = 0
@@ -217,6 +271,22 @@ def import_catalog(
         print(f"Database error during category import: {e}")
         db.close()
         sys.exit(1)
+
+    if categories_only:
+        total_categories_in_db = db.query(GiftCategory).count()
+        db_categories = db.query(GiftCategory.id).order_by(GiftCategory.id).all()
+        cat_ids_in_db = [c[0] for c in db_categories]
+        db.close()
+
+        print("\n==================================================")
+        print("IMPORT REPORT SUMMARY (CATEGORIES ONLY)")
+        print("==================================================")
+        print(f"Number of categories in database: {total_categories_in_db}")
+        print(f"Category IDs in database ({len(cat_ids_in_db)} total):")
+        for cid in cat_ids_in_db:
+            print(f" - {cid}")
+        print("==================================================")
+        return
 
     # ----------------------------------------------------
     # Step 2: Import Products (backend/data/products_v1.csv)
@@ -356,6 +426,16 @@ def import_catalog(
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Import catalog CSV data")
+    parser.add_argument(
+        "--categories-only",
+        action="store_true",
+        help="Only import categories, do not touch products",
+    )
+    args = parser.parse_args()
+
     cat_path = REPO_ROOT / "backend" / "data" / "categories_v1.csv"
     prod_path = REPO_ROOT / "backend" / "data" / "products_v1.csv"
-    import_catalog(cat_path, prod_path)
+    import_catalog(cat_path, prod_path, categories_only=args.categories_only)
